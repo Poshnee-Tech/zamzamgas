@@ -1,0 +1,246 @@
+/* ── Hero ── */
+.cp-hero {
+  position: relative;
+  width: 100%;
+  height: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('/images/contact-bg.png');
+  background-size: cover;
+  background-position: center;
+  /* Fallback when image not present */
+  background-color: #0d1b2a;
+}
+
+.cp-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 22, 40, 0.72);
+  z-index: 1;
+}
+
+.cp-hero__title {
+  position: relative;
+  z-index: 2;
+  font-size: clamp(2.4rem, 7vw, 4rem);
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 0.18em;
+  text-shadow: 0 2px 16px rgba(0,0,0,0.4);
+}
+
+/* ── Body ── */
+.cp-body {
+  background: #f5f5f5;
+  padding: 70px 1.5rem 80px;
+}
+
+.cp-body__container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+/* ── Contact Info ── */
+.cp-info__heading {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #0d1b2a;
+  margin-bottom: 1rem;
+}
+
+.cp-info__quote {
+  font-size: 14px;
+  color: #4a88c5;
+  font-style: italic;
+  line-height: 1.75;
+  margin-bottom: 1.8rem;
+}
+
+.cp-info__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cp-info__list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 14px;
+  color: #4a88c5;
+}
+
+.cp-info__list li a {
+  color: #4a88c5;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.cp-info__list li a:hover {
+  color: #e05543;
+}
+
+.cp-info__icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  color: #4a88c5;
+}
+
+.cp-info__icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ── Form ── */
+.cp-form {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 2.2rem 2rem;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.cp-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+
+.cp-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.cp-form__field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a2e;
+  letter-spacing: 0.02em;
+}
+
+.cp-form__field label span {
+  color: #e05543;
+}
+
+.cp-form__field input,
+.cp-form__field textarea {
+  font-family: var(--font);
+  font-size: 14px;
+  color: #1a1a2e;
+  background: #f8f9fb;
+  border: 1.5px solid #dde2ea;
+  border-radius: 6px;
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  resize: vertical;
+}
+
+.cp-form__field input:focus,
+.cp-form__field textarea:focus {
+  border-color: #4a88c5;
+  box-shadow: 0 0 0 3px rgba(74, 136, 197, 0.12);
+  background: #ffffff;
+}
+
+.cp-form__submit {
+  background: var(--primary);
+  color: #ffffff;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 34px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.cp-form__submit:hover {
+  background: #c94535;
+  transform: translateY(-2px);
+}
+
+/* Success state */
+.cp-form__success {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 3rem 2rem;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.07);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.cp-form__success svg {
+  width: 52px;
+  height: 52px;
+}
+
+.cp-form__success h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #0d1b2a;
+}
+
+.cp-form__success p {
+  font-size: 14px;
+  color: #666;
+}
+
+/* ── Map ── */
+.cp-map {
+  width: 100%;
+  line-height: 0;
+}
+
+.cp-map iframe {
+  display: block;
+  width: 100%;
+  height: 420px;
+  border: 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .cp-body__container {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .cp-hero {
+    height: 260px;
+  }
+
+  .cp-body {
+    padding: 50px 1.25rem 60px;
+  }
+
+  .cp-form {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .cp-form__row {
+    grid-template-columns: 1fr;
+  }
+
+  .cp-map iframe {
+    height: 300px;
+  }
+}
