@@ -1,21 +1,30 @@
-# ── SPA routing: send all non-file requests to index.html ──
-Options -MultiViews
+# ── Disable directory listing (never expose file list) ──
+Options -Indexes -MultiViews
+
+# ── SPA routing: serve the obscured entry file ──
+DirectoryIndex __zz_runtime__.html
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.html [QSA,L]
+RewriteRule ^ __zz_runtime__.html [QSA,L]
+
+# ── Block direct requests for any .html file by name ──
+# Visitors load via domain root only — nobody should request .html directly
+<FilesMatch "\.html$">
+  <If "-f '%{REQUEST_FILENAME}'">
+    # Allow only the entry file; block everything else
+    RewriteCond %{REQUEST_URI} !/__zz_runtime__\.html$
+    RewriteRule ^ - [F,L]
+  </If>
+</FilesMatch>
 
 # ── Security headers ──
 <IfModule mod_headers.c>
-  # Prevent clickjacking
   Header always set X-Frame-Options "SAMEORIGIN"
-  # Prevent MIME-type sniffing
   Header always set X-Content-Type-Options "nosniff"
-  # Enable XSS filter in older browsers
   Header always set X-XSS-Protection "1; mode=block"
-  # Control referrer information
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
-  # Remove server signature
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
   Header always unset X-Powered-By
   Header always unset Server
 </IfModule>
@@ -23,19 +32,21 @@ RewriteRule ^ index.html [QSA,L]
 # ── Cache control ──
 <IfModule mod_expires.c>
   ExpiresActive On
-  # HTML — no cache (always fetch fresh)
-  ExpiresByType text/html                 "access plus 0 seconds"
-  # Hashed JS/CSS assets — cache 1 year (Vite adds content hash to filenames)
-  ExpiresByType application/javascript    "access plus 1 year"
-  ExpiresByType text/css                  "access plus 1 year"
-  # Images
-  ExpiresByType image/webp                "access plus 6 months"
-  ExpiresByType image/jpeg                "access plus 6 months"
-  ExpiresByType image/png                 "access plus 6 months"
-  ExpiresByType image/svg+xml             "access plus 6 months"
-  ExpiresByType image/x-icon              "access plus 1 year"
-  # Fonts
-  ExpiresByType font/woff2                "access plus 1 year"
+  # Entry HTML — never cache (always fetch fresh copy)
+  <FilesMatch "__zz_runtime__\.html$">
+    ExpiresDefault "access plus 0 seconds"
+    Header set Cache-Control "no-store, no-cache, must-revalidate"
+    Header set Pragma "no-cache"
+  </FilesMatch>
+  # Hashed assets — cache 1 year (Vite appends content hash to filenames)
+  ExpiresByType application/javascript  "access plus 1 year"
+  ExpiresByType text/css                "access plus 1 year"
+  ExpiresByType image/webp              "access plus 6 months"
+  ExpiresByType image/jpeg              "access plus 6 months"
+  ExpiresByType image/png               "access plus 6 months"
+  ExpiresByType image/svg+xml           "access plus 6 months"
+  ExpiresByType image/x-icon            "access plus 1 year"
+  ExpiresByType font/woff2              "access plus 1 year"
 </IfModule>
 
 # ── Gzip compression ──
@@ -46,8 +57,20 @@ RewriteRule ^ index.html [QSA,L]
   AddOutputFilterByType DEFLATE image/svg+xml
 </IfModule>
 
-# ── Block access to sensitive files ──
-<FilesMatch "(^\.htaccess|\.git|package\.json|package-lock\.json|vite\.config\.js)">
+# ── Block access to sensitive and commonly targeted files ──
+<FilesMatch "(\.htaccess|\.htpasswd|\.git|\.env|package\.json|package-lock\.json|vite\.config\.js|README\.md)">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+
+# ── Block common malware drop filenames ──
+<FilesMatch "(shell|backdoor|c99|r57|wso|b374k|alfa|indoxploit|bypass|cmd|eval|base64|webshell)(.*)\.(php|html|js|txt)$">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+
+# ── Block PHP execution in uploads/assets folders ──
+<FilesMatch "\.php$">
   Order allow,deny
   Deny from all
 </FilesMatch>
