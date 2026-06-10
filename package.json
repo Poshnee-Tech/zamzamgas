@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:hosting": "vite build --mode hosting",
+    "build:hosting": "vite build --mode hosting && node scripts/inject-sri.js",
     "preview": "vite preview"
   },
   "dependencies": {
